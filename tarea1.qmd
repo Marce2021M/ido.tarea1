@@ -7,7 +7,6 @@ date: today
 format:
   pdf:
     latex_engine: xelatex
-    
 nocite: |
   @*
 ---
@@ -33,8 +32,8 @@ $y_{j} = 1$ si se apunta el área $j$ en la solución, y $0$ en caso contrario
 \begin{align*}
 \text{min} \quad & \sum_{i=1}^{M} \sum_{j=1}^{N} c_{ij} x_{ij} \\
 \text{s.a.} \quad & \sum_{j=1}^{N} x_{ij} = 1, \quad i = 1, \ldots, M \\
-& \sum_{i=1}^{M} p_{i} x_{ij} \geq L y_{i}, \quad j = 1, \ldots, N \\
-& \sum_{j=1}^{M} p_{i} x_{ij} \left( \sum_{j=1}^{M} p_{i} \right) \leq y_{j} = N \\
+& \sum_{i=1}^{M} p_{i} x_{ij} \geq L y_{j}, \quad j = 1, \ldots, N \\
+& \sum_{i=1}^{M} p_{i} x_{ij}  \leq \left( \sum_{i=1}^{M} p_{i} \right)y_{j} \quad j = 1, \ldots, N  \\
 & y_{ij} = \begin{cases} 
 1 & \text{si el área } j \text{ se utiliza} \\
 0 & \text{en otro caso}
@@ -49,7 +48,48 @@ $y_{j} = 1$ si se apunta el área $j$ en la solución, y $0$ en caso contrario
 # Modelo en julia
 
 ```{julia}
-using JuMP, Cbc
+using JuMP, HiGHS
+M = 6
+N = 7
+L = 100
 
+matrixCostos = [
+    10 30 30 40 50 60 80;
+    50 25 40 30 60 30 5;
+    70 50 15 60 40 50 60;
+    30 50	40	30	10	70	45;
+    60 30	40	10	50	70	35;
+    30 40	50	30	40	50	10;
+]
+
+poblacion = [75, 50, 100, 150, 120, 80]
+
+model = Model(HiGHS.Optimizer)
+
+@variable(model, x[1:M, 1:N] >= 0, Bin)
+@variable(model, y[1:N] >= 0, Bin)
+
+@constraint(model, [i=1:M], sum(x[i,j] for j=1:N) == 1)
+@constraint(model, [j=1:N], sum(x[i,j]*poblacion[i] for i=1:M) >= L*y[j])
+@constraint(model, [j=1:N], sum(x[i,j]*poblacion[i] for i=1:M) <= sum(poblacion)*y[j])
+
+@objective(model, Min, sum(matrixCostos[i,j]*x[i,j] for i=1:M, j=1:N))
+
+optimize!(model)
+
+
+
+```
+
+```{julia}
+solution_summary(model; verbose = true)
+```
+
+```{julia}
+value.(x)
+```
+
+```{julia}
+value.(y)
 
 ```

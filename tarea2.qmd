@@ -1,0 +1,27 @@
+---
+title: "IDO-  Tarea 2"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+date: today
+format:
+  pdf:
+    latex_engine: xelatex
+nocite: |
+  @*
+---
+\newpage
+# Juego de fiver
+
+## Modelo en julia
+
+```{julia}
+using JuMP, HiGHS
+
+#Definimos el modelo
+model = Model(HiGHS.Optimizer)
+
+#Definimos las variables
+@variable(model, x[1:5,1:5], Bin)
+
+```
