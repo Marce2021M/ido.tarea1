@@ -1,0 +1,24 @@
+---
+title: "IDO-  Tarea 1"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+date: today
+format:
+  html:
+    html-math-method: mathjax
+    page-layout: full
+    embed-resources: true
+    code-fold: true
+    toc: true
+    toc-depth: 3
+nocite: |
+  @*
+---
+
+# Problema de la ONU
+
+## Enunciado
+
+
+
