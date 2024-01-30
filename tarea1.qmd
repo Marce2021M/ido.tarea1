@@ -5,20 +5,51 @@ author:
   - Marcelino Sánchez Rodríguez 191654
 date: today
 format:
-  html:
-    html-math-method: mathjax
-    page-layout: full
-    embed-resources: true
-    code-fold: true
-    toc: true
-    toc-depth: 3
+  pdf:
+    latex_engine: xelatex
+    
 nocite: |
   @*
 ---
-
+\newpage
 # Problema de la ONU
 
 ## Enunciado
 
+Considere la situación en que se asignan $M$ poblaciones en $N$ áreas
+distintas. El tamaño de la población $i$ es $p_i$ y el costo de la
+asignación de la población $i$ al área $j$ es $c_{ij}$ . Un área seleccionada en
+la solución óptima debe incluir al menos $L$ personas ($L$ se supone
+constante). También cada área puede aceptar más de una
+población. El objetivo del problema trata de la minimización del
+costo total de las asignaciones.
+Supongamos que:
+$x_{ij} = 1$ si se asigna la población $i$ al área $j$, y $0$ en caso contrario
+$y_{j} = 1$ si se apunta el área $j$ en la solución, y $0$ en caso contrario
 
 
+## Formulación
+
+\begin{align*}
+\text{min} \quad & \sum_{i=1}^{M} \sum_{j=1}^{N} c_{ij} x_{ij} \\
+\text{s.a.} \quad & \sum_{j=1}^{N} x_{ij} = 1, \quad i = 1, \ldots, M \\
+& \sum_{i=1}^{M} p_{i} x_{ij} \geq L y_{i}, \quad j = 1, \ldots, N \\
+& \sum_{j=1}^{M} p_{i} x_{ij} \left( \sum_{j=1}^{M} p_{i} \right) \leq y_{j} = N \\
+& y_{ij} = \begin{cases} 
+1 & \text{si el área } j \text{ se utiliza} \\
+0 & \text{en otro caso}
+\end{cases} \\
+& x_{ij} = \begin{cases} 
+1 & \text{si la población } i \text{ está en el área } j \\
+0 & \text{en otro caso}
+\end{cases} \\
+& x_{ij}, y_{ij} \geq 0, \quad i = 1, \ldots, M, \; j = 1, \ldots, N
+\end{align*}
+
+# Modelo en julia
+
+```{julia}
+using JuMP, Cbc
+
+
+```
