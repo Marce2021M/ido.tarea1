@@ -1,0 +1,126 @@
+---
+title: "IDO-  Tarea 3"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+date: today
+format:
+  pdf:
+    latex_engine: xelatex
+message: false
+warnings: false
+---
+\newpage
+# Problema de la ONU
+
+## Enunciado
+
+ALGORITMO: Ramificación y Acotamiento
+1. Inicializar la lista de nodos pendientes con el nodo raíz.
+2. Mientras la lista de nodos pendientes no esté vacía, hacer:
+  a. Seleccionar y eliminar un nodo de la lista de nodos pendientes.
+  b. Si el nodo seleccionado es prometedor, entonces:
+    i. Si el nodo seleccionado es una solución completa, comparar con la mejor solución actual.
+    ii. De lo contrario, ramificar el nodo para generar nuevos nodos y agregarlos a la lista.
+3. Devolver la mejor solución encontrada.
+
+
+\begin{align*}
+max \quad & z = 120x_1 + 80x_2 \\
+\quad & 2x_1 + x_2 + x_3 = 6 \\
+& 7x_1 + 8x_2 + x_4 \leq 28 \\
+& x_3 -.5 x_4 = 2.5 \\
+& x_i \in Z_{+} \quad \text{para todo } i
+\end{align*}
+
+# Modelo en julia
+
+Por método de ramificación y acotamiento se tiene el siguiente modelo en julia
+
+Primero realizamos un simplex normal:
+
+```{julia, echo=FALSE}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:4] >= 0)
+
+@objective(model, Max, 120x[1] + 80x[2])
+
+@constraint(model, 2*x[1] + x[2] + x[3] == 6)
+@constraint(model, 7*x[1] + 8*x[2] + x[4] <= 28)
+@constraint(model, x[3] - 0.5*x[4] == 2.5)
+
+optimization_result = optimize!(model)
+
+```
+
+El resultado es:
+```{julia}
+value.(x)
+```
+
+## Ramificación 1
+
+Con lo cual decidimos ramificar en la variable $x_{3}$, dado que tuvimos soluciones fraccionadas:
+
+### Nodo 1
+
+
+
+```{julia, echo=FALSE}
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:4] >= 0)
+
+@objective(model, Max, 120x[1] + 80x[2])
+
+@constraint(model, 2*x[1] + x[2] + x[3] == 6)
+@constraint(model, 7*x[1] + 8*x[2] + x[4] <= 28)
+@constraint(model, x[3] - 0.5*x[4] == 2.5)
+@constraint(model, x[3]  >= 3)
+
+optimization_result = optimize!(model)
+```
+
+```{julia}
+value.(x)
+
+```
+
+
+### Nodo 2
+
+```{julia}
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:4] >= 0)
+
+@objective(model, Max, 120x[1] + 80x[2])
+
+@constraint(model, 2*x[1] + x[2] + x[3] == 6)
+@constraint(model, 7*x[1] + 8*x[2] + x[4] <= 28)
+@constraint(model, x[3] - 0.5*x[4] == 2.5)
+@constraint(model, x[3]  <= 2)
+
+optimization_result = optimize!(model)
+```
+
+## Solución
+
+Por lo tanto la solución es la del nodo 1
+
+# Verdadera solución
+De hecho la solución final del problema es:
+```{julia}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:4] >= 0, Int)
+
+@objective(model, Max, 120x[1] + 80x[2])
+
+@constraint(model, 2*x[1] + x[2] + x[3] == 6)
+@constraint(model, 7*x[1] + 8*x[2] + x[4] <= 28)
+@constraint(model, x[3] - 0.5*x[4] == 2.5)
+
+optimization_result = optimize!(model)
+value.(x)
+```
+
