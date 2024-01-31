@@ -105,10 +105,13 @@ optimization_result = optimize!(model)
 
 ## Solución
 
-Por lo tanto la solución es la del nodo 1
+Por lo tanto la solución es la del nodo 1, porque es la única que tiene solución entera de los dos espacios posibles, y sabiendo que en uno es infactible.
+
+
 
 # Verdadera solución
 De hecho la solución final del problema es:
+
 ```{julia}
 using JuMP, HiGHS
 model = Model(HiGHS.Optimizer)
