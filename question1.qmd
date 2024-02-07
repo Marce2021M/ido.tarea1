@@ -1,0 +1,34 @@
+---
+title: "IDO-  Question 1"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+date: today
+format:
+  pdf:
+    latex_engine: xelatex
+message: false
+warnings: false
+---
+
+```{julia}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:15], Bin)
+@variable(model, y >= 0)
+
+@objective(model, Min, y)
+
+@constraint(model, 2*sum(x) + y  == 15)
+
+
+optimization_result = optimize!(model)
+```
+
+```{julia}
+value.(x)
+```
+
+```{julia}
+value.(y)
+```
