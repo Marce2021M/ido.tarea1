@@ -26,6 +26,10 @@ optimization_result = optimize!(model)
 ```
 
 ```{julia}
+@time optimize!(model)
+```
+
+```{julia}
 value.(x)
 ```
 
