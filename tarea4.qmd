@@ -1,0 +1,117 @@
+---
+title: "IDO-  Tarea 4"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+  - Diana Espinosa Ruiz
+date: today
+format:
+  pdf:
+    latex_engine: xelatex
+nocite: |
+  @*
+---
+# TAREA 1 PPL
+
+# Problema 2
+```{julia, echo=FALSE}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:3] >= 0)
+
+@objective(model, Max, 3x[1] + 4x[2] - 3x[3] )
+
+@constraint(model, x[1] + 5x[2] + 8x[3] <= 40)
+
+optimization_result = optimize!(model)
+
+value.(x)
+```
+
+# Problema 3
+```{julia, echo=FALSE}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:3] >= 0)
+
+@objective(model, Max, 3x[1] + 4x[2] - 3x[3] )
+
+@constraint(model, x[1] + 5x[2] + 8x[3] <= 40)
+
+optimization_result = optimize!(model)
+
+value.(x)
+```
+
+# Problema 4
+```{julia}
+using JuMP, HiGHS
+
+model = Model(HiGHS.Optimizer)
+N = 4
+M= 4
+@variable(model, x[1:N, 1:N], Bin)
+
+# Restricciones de filas y columnas (ya las tienes)
+@constraint(model, [i=1:N], sum(x[i,j] for j=1:N) <= 1)  # Restricción de fila
+@constraint(model, [j=1:N], sum(x[i,j] for i=1:N) <= 1)  # Restricción de columna
+
+# Restricciones de las diagonales principales
+for d = -(N-1):(N-1)
+    @constraint(model, sum(x[i, i+d] for i=1:N if 1 <= i+d <= N) <= 1)
+end
+
+# Restricciones de las diagonales secundarias
+for d = 2:(2*N)
+    @constraint(model, sum(x[i, d-i] for i=1:N if 1 <= d-i <= N) <= 1)
+end
+
+@constraint(model, sum(x[i,j] for i=1:N, j=1:N) <= M)
+
+
+@objective(model, Max, sum(x[i,j] for i=1:N, j=1:N))
+
+optimize!(model)
+```
+
+```{julia}
+value.(x)
+```
+
+# Problema 5
+```{julia}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:3] >= 0)
+
+@variable(model, u >= 0 , Bin)
+
+@objective(model, Max, -3x[1] - 4x[2] + 3x[3] )
+M=1000
+
+@constraint(model, x[1] + x[2] + 4x[3] <= 60)
+@constraint(model, -x[1] + 2x[2] + x[3] >= 12)
+@constraint(model, x[2] + x[3] <= M*u)
+@constraint(model, x[1] + x[3] <= 54 + M*(1-u))
+@constraint(model, x[2] + x[3] >= u)
+
+optimization_result = optimize!(model)
+
+value.(x)
+```
+
+# Problema 6
+```{julia}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+@variable(model, x[1:3] >= 0)
+
+@objective(model, Max, -3x[1] - 4x[2] + 3x[3] )
+
+@constraint(model, x[1] + x[2] + 4x[3] <= 60)
+@constraint(model, -x[1] + 2x[2] + x[3] >= 12)
+
+optimization_result = optimize!(model)
+
+value.(x)
+```
