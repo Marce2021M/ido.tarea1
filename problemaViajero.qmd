@@ -1,0 +1,53 @@
+---
+title: "IDO-  Problema del viajero"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+date: today
+format:
+  pdf:
+    latex_engine: xelatex
+message: false
+warnings: false
+---
+
+# Problema del viajero
+
+
+```{julia}
+using JuMP, HiGHS
+model = Model(HiGHS.Optimizer)
+
+M = 4
+N = 4
+
+@variable(model, x[1:M, 1:N], Bin)
+
+matrizCostos = [0 2 4 5; 2 0 7 2; 4 7 0 1; 5 2 1 0]
+
+for j in 1:N
+    @constraint(model, sum(x[i, j] for i in 1:M) == 1)
+end
+
+for i in 1:M
+    @constraint(model, sum(x[i, j] for j in 1:N) == 1)
+end
+
+for i in 1:M
+    @constraint(model, x[i,i] == 0)
+end
+
+@objective(model, Min, sum(matrizCostos[i, j] * x[i, j] for i in 1:M, j in 1:N))
+
+optimization_result = optimize!(model)
+```
+
+```{julia}
+value.(x)
+```
+
+```{julia}
+
+solution_summary(model; verbose = true)
+
+```
