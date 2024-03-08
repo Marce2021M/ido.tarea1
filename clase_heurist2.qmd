@@ -1,0 +1,17 @@
+---
+title: "Clase heurística"
+lang: es
+author: 
+  - Marcelino Sánchez Rodríguez 191654
+  - Samuel  Méndez 196659
+date: today
+format:
+  pdf:
+    latex_engine: xelatex
+nocite: |
+  @*
+---
+
+```{r}
+
+```
